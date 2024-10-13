@@ -20,11 +20,18 @@ CheapYellowDisplay cyd;
 ProjectDisplay *projectDisplay = &cyd;
 
 Timezone myTZ;
+int buttonPressed = false;
+
+void IRAM_ATTR buttonInt() {
+  buttonPressed = true;
+  Serial.println("button pressed.");
+}
 
 void baseProjectSetup() {
   projectDisplay->displaySetup();
 
   bool forceConfig = false;
+  attachInterrupt(0, buttonInt, FALLING);
 
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
   if (drd->detectDoubleReset()) {
