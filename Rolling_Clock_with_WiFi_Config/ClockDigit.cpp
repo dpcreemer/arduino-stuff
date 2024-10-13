@@ -1,9 +1,8 @@
-#include "Digit.h"
+#include "ClockDigit.h"
 
 Digit::Digit(int value) {
   m_value = value;
   m_newValue = value;
-  m_frame = 0;
 }
 
 int Digit::Value() {
@@ -23,15 +22,6 @@ int Digit::NewValue() {
 int Digit::NewValue(int newValue) {
   m_newValue = newValue;
   return m_newValue;
-}
-
-int Digit::Frame() {
-  return m_frame;
-}
-
-int Digit::Frame(int frame) {
-  m_frame = frame;
-  return m_frame;
 }
 
 int Digit::Height() {
