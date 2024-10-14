@@ -1,5 +1,5 @@
 #include "genericBaseProject.h"
-#include "RollingClockLogic.h"
+#include "ClockLogic.h"
 
 bool first = true;
 
@@ -16,4 +16,6 @@ void loop() {
     drawRollingClock();
     first = false;
   }
+  if (buttonPressed) buttonPress();
+  if (msgTimer != 0 && millis() > msgTimer) clearMessage();
 }

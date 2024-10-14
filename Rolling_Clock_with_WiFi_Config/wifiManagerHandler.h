@@ -1,4 +1,3 @@
-
 DoubleResetDetector *drd;
 ProjectDisplay *wm_Display;
 
