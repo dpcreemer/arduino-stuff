@@ -10,10 +10,11 @@ const int16_t COLOR_BG = TFT_BLACK;
 const String ARGS[] = {"alpha", "beta", "gamma", "deta", "epsilon"};
 const String VALUES[] = {"gato", "pero", "mono", "pajaro", "elefante"};
 const char* serverName = "http://192.168.4.1:80/";
+char postBuffer[60];
 
 HTTPClient http;
 int buttonPressed = false;
-Car *car = new Car(0, 'P', 100);
+Car *car = new Car(50, 'D', 90);
 
 void IRAM_ATTR buttonInt() {
   buttonPressed = true;
@@ -26,10 +27,22 @@ void buttonPress() {
   http.begin(serverName);
   Serial.println("Connected. Making Post.");
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  String post = ARGS[0] + "=" + VALUES[random(5)];
-  for (int i = 1; i < 5; i++) post += "&" + ARGS[i] + "=" + VALUES[random(5)]; 
-  int resp = http.POST(post);
+//  String post = ARGS[0] + "=" + VALUES[random(5)];
+//  for (int i = 1; i < 5; i++) post += "&" + ARGS[i] + "=" + VALUES[random(5)]; 
+//  int resp = http.POST(post);
+  sprintf(postBuffer, "speed=%d&gear=%c&charge=%d", car->Speed(), car->Gear(), car->Charge());
+  Serial.print("Post: ");
+  Serial.println(postBuffer);
+  int resp = http.POST(postBuffer);
   Serial.printf("Resp code: %d\n", resp);
+  http.end();
+}
+
+void updateDisplay() {
+  http.begin(serverName);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  sprintf(postBuffer, "speed=%d&gear=%c&charge=%d", car->Speed(), car->Gear(), car->Charge());
+  int resp = http.POST(postBuffer);
   http.end();
 }
 
@@ -62,5 +75,7 @@ void setup() {
 
 void loop() {
   if (buttonPressed) buttonPress();
-  delay(100);
+  car->Update();
+  updateDisplay();
+  delay(400);
 }

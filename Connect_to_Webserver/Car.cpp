@@ -1,9 +1,11 @@
 #include "Car.h"
+#include <cstdio>
 
 Car::Car(int speed, char gear, int charge) {
   m_speed = speed;
   m_gear = gear;
   m_charge = charge;
+  m_targetSpeed = speed;
 }
 
 int Car::Speed() {
@@ -33,9 +35,17 @@ int Car::Charge(int charge) {
   return m_charge;
 }
 
-String Car::PostString() {
-  String rv = "speed=" + String(m_speed);
-  rv += "&gear=" + m_gear;
-  rv += "&charge=" + String(m_charge);
-  return rv;
+void Car::Update() {
+  randomSeed(millis());
+  if (random(10) == 0 && m_charge > 50) 
+    m_targetSpeed = 20 * random(4);
+  else if (m_charge < 10)
+    m_targetSpeed = 0;
+  m_gear = (m_targetSpeed + m_speed > 0) ? 'D' : 'P';
+  if (m_speed != m_targetSpeed)
+    m_speed += (m_targetSpeed > m_speed) ? 2 : -2;
+  if (m_gear == 'D') m_charge -= 1;
+  if (m_gear == 'P' && m_charge < 100) m_charge += 2;
+  if (m_charge > 100) m_charge = 100;
+  if (m_charge < 0) m_charge = 0;
 }
